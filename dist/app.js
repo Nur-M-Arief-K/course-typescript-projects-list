@@ -129,7 +129,8 @@ class projectItem extends Component {
     }
     ;
     dragStartHandler(event) {
-        console.log(event);
+        event.dataTransfer.setData("text/plain", this.project.id);
+        event.dataTransfer.effectAllowed = "move";
     }
     ;
     dragEndHandler(_) {
@@ -161,12 +162,17 @@ class ProjectList extends Component {
         this.renderContent();
     }
     ;
-    dragOverHandler(_) {
-        const listEl = this.element.querySelector("ul");
-        listEl.classList.add("droppable");
+    dragOverHandler(event) {
+        if (event.dataTransfer && event.dataTransfer.types[0] === "text/plain") {
+            event.preventDefault();
+            const listEl = this.element.querySelector("ul");
+            listEl.classList.add("droppable");
+        }
     }
     ;
-    dropHandler(_) { }
+    dropHandler(event) {
+        console.log(event.dataTransfer.getData("text/plain"));
+    }
     ;
     dragLeaveHandler(_) {
         const listEl = this.element.querySelector("ul");
