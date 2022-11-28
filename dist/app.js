@@ -5,6 +5,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+;
+;
 var ProjectStatus;
 (function (ProjectStatus) {
     ProjectStatus[ProjectStatus["Active"] = 0] = "Active";
@@ -126,7 +128,18 @@ class projectItem extends Component {
         this.renderContent();
     }
     ;
-    configure() { }
+    dragStartHandler(event) {
+        console.log(event);
+    }
+    ;
+    dragEndHandler(_) {
+        console.log("dragEnd");
+    }
+    ;
+    configure() {
+        this.element.addEventListener("dragstart", this.dragStartHandler);
+        this.element.addEventListener("dragend", this.dragEndHandler);
+    }
     ;
     renderContent() {
         this.element.querySelector("h2").textContent = this.project.title;
@@ -135,6 +148,9 @@ class projectItem extends Component {
     }
     ;
 }
+__decorate([
+    AutoBind
+], projectItem.prototype, "dragStartHandler", null);
 ;
 class ProjectList extends Component {
     constructor(type) {
@@ -145,7 +161,22 @@ class ProjectList extends Component {
         this.renderContent();
     }
     ;
+    dragOverHandler(_) {
+        const listEl = this.element.querySelector("ul");
+        listEl.classList.add("droppable");
+    }
+    ;
+    dropHandler(_) { }
+    ;
+    dragLeaveHandler(_) {
+        const listEl = this.element.querySelector("ul");
+        listEl.classList.remove("droppable");
+    }
+    ;
     configure() {
+        this.element.addEventListener("dragover", this.dragOverHandler);
+        this.element.addEventListener("dragleave", this.dragLeaveHandler);
+        this.element.addEventListener("drop", this.dropHandler);
         projectState.addListener((projects) => {
             const relevantProjects = projects.filter(prj => {
                 if (this.type === "active") {
@@ -174,6 +205,12 @@ class ProjectList extends Component {
     }
     ;
 }
+__decorate([
+    AutoBind
+], ProjectList.prototype, "dragOverHandler", null);
+__decorate([
+    AutoBind
+], ProjectList.prototype, "dragLeaveHandler", null);
 class ProjectInput extends Component {
     constructor() {
         super("project-input", "app", true, "user-input");
